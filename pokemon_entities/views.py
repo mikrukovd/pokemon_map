@@ -1,5 +1,4 @@
 import folium
-import json
 
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
@@ -68,7 +67,7 @@ def show_pokemon(request, pokemon_id):
     pokemons = {
         'pokemon_id': pokemon.pk,
         'title_ru': pokemon.title,
-        'description': '123',
+        'description': pokemon.description,
         'img_url': request.build_absolute_uri(pokemon.image.url),
     }
 
