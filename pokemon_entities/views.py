@@ -20,8 +20,6 @@ def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
     )
     folium.Marker(
         [lat, lon],
-        # Warning! `tooltip` attribute is disabled intentionally
-        # to fix strange folium cyrillic encoding bug
         icon=icon,
     ).add_to(folium_map)
 
@@ -62,10 +60,7 @@ def show_pokemon(request, pokemon_id):
     except Pokemon.DoesNotExist:
         return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
 
-    pokemon_entities = PokemonEntity.objects.filter(pokemon=pokemon)
-
     previous_evolution = pokemon.previous_evolution
-
     if previous_evolution:
         previous_evolution = {
             'title_ru': previous_evolution.title_ru,
@@ -76,7 +71,6 @@ def show_pokemon(request, pokemon_id):
         previous_evolution = None
 
     next_evolution = pokemon.next_evolution.first()
-
     if next_evolution:
         next_evolution = {
             'title_ru': next_evolution.title_ru,
@@ -86,6 +80,16 @@ def show_pokemon(request, pokemon_id):
     else:
         next_evolution = None
 
+    pokemon_entities = PokemonEntity.objects.filter(pokemon=pokemon)
+    entities = []
+    for pokemon_entity in pokemon_entities:
+        entity = {
+            'level': pokemon_entity.level,
+            'lat': pokemon_entity.lat,
+            'lon': pokemon_entity.lon
+        }
+        entities.append(entity)
+
     pokemons = {
         'pokemon_id': pokemon.pk,
         'title_ru': pokemon.title_ru,
@@ -93,6 +97,7 @@ def show_pokemon(request, pokemon_id):
         'title_jp': pokemon.title_jp,
         'description': pokemon.description,
         'img_url': request.build_absolute_uri(pokemon.image.url),
+        'entities': entities,
         'previous_evolution': previous_evolution,
         'next_evolution': next_evolution
     }
