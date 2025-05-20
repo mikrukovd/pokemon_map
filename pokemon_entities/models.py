@@ -21,7 +21,7 @@ class Pokemon(models.Model):
         blank=True,
         verbose_name='Загрузить изображение'
     )
-    description = models.TextField(verbose_name='Описание')
+    description = models.TextField(blank=True, verbose_name='Описание')
     previous_evolution = models.ForeignKey(
         'self',
         on_delete=models.SET_NULL,
@@ -44,8 +44,16 @@ class PokemonEntity(models.Model):
     )
     lat = models.FloatField(blank=True, verbose_name='Широта')
     lon = models.FloatField(blank=True, verbose_name='Долгота')
-    appeared_at = models.DateTimeField(verbose_name='Дата появления')
-    disappeared_at = models.DateTimeField(verbose_name='Дата исчезновения')
+    appeared_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name='Дата появления'
+    )
+    disappeared_at = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name='Дата исчезновения'
+    )
     level = models.IntegerField(
         blank=True,
         null=True,
